@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
 import {
   removeItem,
   increaseQuantity,
@@ -9,99 +8,179 @@ import {
   selectCartTotal,
   selectCartCount,
 } from '../store/CartSlice';
-import { Navbar } from './ProductList';
 
-function ComingSoonModal({ onClose }) {
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-        <h2>🚧 Coming Soon!</h2>
-        <p>Our checkout feature is currently under construction. Stay tuned!</p>
-        <button onClick={onClose}>Got it!</button>
-      </div>
-    </div>
-  );
-}
-
-function CartItem() {
-  const dispatch   = useDispatch();
-  const items      = useSelector(selectCartItems);
-  const total      = useSelector(selectCartTotal);
-  const cartCount  = useSelector(selectCartCount);
+function CartItem({ onContinueShopping, onHomeClick }) {
+  const dispatch  = useDispatch();
+  const items     = useSelector(selectCartItems);
+  const total     = useSelector(selectCartTotal);
+  const cartCount = useSelector(selectCartCount);
   const [showModal, setShowModal] = useState(false);
+
+  const calculateTotalCost = (item) => {
+    return (item.price * item.quantity).toFixed(2);
+  };
+
+  const calculateTotalAmount = () => {
+    return items
+      .reduce((acc, item) => acc + item.price * item.quantity, 0)
+      .toFixed(2);
+  };
+
+  const handleIncrement = (item) => {
+    dispatch(increaseQuantity(item.id));
+  };
+
+  const handleDecrement = (item) => {
+    dispatch(decreaseQuantity(item.id));
+  };
+
+  const handleRemove = (item) => {
+    dispatch(removeItem(item.id));
+  };
+
+  const handleCheckoutShopping = () => {
+    setShowModal(true);
+  };
+
+  const handleContinueShopping = () => {
+    onContinueShopping();
+  };
 
   return (
     <>
-      <Navbar cartCount={cartCount} />
+      {/* NAVBAR */}
+      <nav className="navbar">
+        <div className="navbar-brand" onClick={onHomeClick}>
+          🌿 Paradise Nursery
+        </div>
+        <ul className="navbar-links">
+          <li onClick={onHomeClick}>Home</li>
+          <li onClick={onContinueShopping}>Plants</li>
+          <li>
+            <div className="cart-icon-wrapper">
+              🛒
+              {cartCount > 0 && (
+                <span className="cart-count">{cartCount}</span>
+              )}
+            </div>
+          </li>
+        </ul>
+      </nav>
+
+      {/* CART PAGE */}
       <div className="cart-page">
-        <h1>🛒 Your Cart</h1>
+        <h1>🛒 Your Shopping Cart</h1>
+
+        {/* TOTAL CART AMOUNT AT TOP */}
+        <div className="cart-total-amount" style={{ marginBottom: '24px' }}>
+          Total Cart Amount: ${calculateTotalAmount()}
+        </div>
 
         {items.length === 0 ? (
           <div className="cart-empty">
             <p>Your cart is empty.</p>
-            <Link
-              to="/plants"
+            <button
               className="btn-continue-shopping"
-              style={{ marginTop: '24px', display: 'inline-block' }}
+              onClick={handleContinueShopping}
+              style={{ marginTop: '24px' }}
             >
               Browse Plants
-            </Link>
+            </button>
           </div>
         ) : (
           <>
             {items.map((item) => (
               <div className="cart-item" key={item.id}>
+
+                {/* THUMBNAIL */}
                 <img src={item.image} alt={item.name} />
+
                 <div className="cart-item-info">
+                  {/* NAME */}
                   <div className="cart-item-name">{item.name}</div>
+
+                  {/* UNIT PRICE */}
                   <div className="cart-item-unit-price">
                     Unit Price: ${item.price.toFixed(2)}
                   </div>
+
+                  {/* TOTAL COST PER ITEM */}
                   <div className="cart-item-total">
-                    Total: ${(item.price * item.quantity).toFixed(2)}
+                    Total Cost: ${calculateTotalCost(item)}
                   </div>
                 </div>
+
+                {/* CONTROLS */}
                 <div className="cart-item-controls">
                   <button
                     className="qty-btn"
-                    onClick={() => dispatch(decreaseQuantity(item.id))}
-                  >−</button>
+                    onClick={() => handleDecrement(item)}
+                  >
+                    −
+                  </button>
                   <span className="qty-value">{item.quantity}</span>
                   <button
                     className="qty-btn"
-                    onClick={() => dispatch(increaseQuantity(item.id))}
-                  >+</button>
+                    onClick={() => handleIncrement(item)}
+                  >
+                    +
+                  </button>
                   <button
                     className="btn-delete"
-                    onClick={() => dispatch(removeItem(item.id))}
-                  >Delete</button>
+                    onClick={() => handleRemove(item)}
+                  >
+                    Delete
+                  </button>
                 </div>
+
               </div>
             ))}
 
+            {/* ORDER SUMMARY */}
             <div className="cart-summary">
               <h3>Order Summary</h3>
               <div>Total Items: {cartCount}</div>
               <div className="cart-total-amount">
-                Total: ${total.toFixed(2)}
+                Total Amount: ${calculateTotalAmount()}
               </div>
               <div className="cart-actions">
                 <button
                   className="btn-checkout"
-                  onClick={() => setShowModal(true)}
+                  onClick={handleCheckoutShopping}
                 >
                   Checkout
                 </button>
-                <Link to="/plants" className="btn-continue-shopping">
+                <button
+                  className="btn-continue-shopping"
+                  onClick={handleContinueShopping}
+                >
                   Continue Shopping
-                </Link>
+                </button>
               </div>
             </div>
           </>
         )}
       </div>
 
-      {showModal && <ComingSoonModal onClose={() => setShowModal(false)} />}
+      {/* COMING SOON MODAL */}
+      {showModal && (
+        <div
+          className="modal-overlay"
+          onClick={() => setShowModal(false)}
+        >
+          <div
+            className="modal-box"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2>🚧 Coming Soon!</h2>
+            <p>
+              Our checkout feature is currently under construction.
+              Stay tuned for updates!
+            </p>
+            <button onClick={() => setShowModal(false)}>Got it!</button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
