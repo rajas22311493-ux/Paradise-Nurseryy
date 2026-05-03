@@ -12,27 +12,21 @@ import {
 function CartItem({ onContinueShopping, onHomeClick }) {
   const dispatch  = useDispatch();
   const items     = useSelector(selectCartItems);
-  const total     = useSelector(selectCartTotal);
   const cartCount = useSelector(selectCartCount);
   const [showModal, setShowModal] = useState(false);
 
   const calculateTotalAmount = () =>
-    items
-      .reduce((acc, item) => acc + item.price * item.quantity, 0)
-      .toFixed(2);
+    items.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
 
   const calculateTotalCost = (item) =>
     (item.price * item.quantity).toFixed(2);
 
   const handleIncrement = (item) => dispatch(increaseQuantity(item.id));
-
   const handleDecrement = (item) => dispatch(decreaseQuantity(item.id));
-
-  const handleRemove = (item) => dispatch(removeItem(item.id));
+  const handleRemove    = (item) => dispatch(removeItem(item.id));
 
   return (
     <>
-      {/* NAVBAR — consistent with ProductList */}
       <nav className="navbar">
         <div className="navbar-brand" onClick={onHomeClick} style={{ cursor: 'pointer' }}>
           🌿 Paradise Nursery
@@ -41,20 +35,14 @@ function CartItem({ onContinueShopping, onHomeClick }) {
           <li onClick={onHomeClick} style={{ cursor: 'pointer' }}>Home</li>
           <li onClick={onContinueShopping} style={{ cursor: 'pointer' }}>Plants</li>
           <li>
-            <div
-              className="cart-icon-wrapper"
-              style={{ cursor: 'default' }}
-            >
+            <div className="cart-icon-wrapper" style={{ cursor: 'default' }}>
               🛒
-              {cartCount > 0 && (
-                <span className="cart-count">{cartCount}</span>
-              )}
+              {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
             </div>
           </li>
         </ul>
       </nav>
 
-      {/* CART PAGE */}
       <div className="cart-page">
         <h1>🛒 Your Shopping Cart</h1>
 
@@ -77,7 +65,6 @@ function CartItem({ onContinueShopping, onHomeClick }) {
           <>
             {items.map((item) => (
               <div className="cart-item" key={item.id}>
-
                 <img src={item.image} alt={item.name} />
 
                 <div className="cart-item-info">
@@ -114,11 +101,9 @@ function CartItem({ onContinueShopping, onHomeClick }) {
                     Delete
                   </button>
                 </div>
-
               </div>
             ))}
 
-            {/* ORDER SUMMARY */}
             <div className="cart-summary">
               <h3>Order Summary</h3>
               <div>Total Items: {cartCount}</div>
@@ -126,16 +111,10 @@ function CartItem({ onContinueShopping, onHomeClick }) {
                 Total Amount: ${calculateTotalAmount()}
               </div>
               <div className="cart-actions">
-                <button
-                  className="btn-checkout"
-                  onClick={() => setShowModal(true)}
-                >
+                <button className="btn-checkout" onClick={() => setShowModal(true)}>
                   Checkout
                 </button>
-                <button
-                  className="btn-continue-shopping"
-                  onClick={onContinueShopping}
-                >
+                <button className="btn-continue-shopping" onClick={onContinueShopping}>
                   Continue Shopping
                 </button>
               </div>
@@ -144,7 +123,6 @@ function CartItem({ onContinueShopping, onHomeClick }) {
         )}
       </div>
 
-      {/* COMING SOON MODAL */}
       {showModal && (
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
           <div className="modal-box" onClick={(e) => e.stopPropagation()}>
