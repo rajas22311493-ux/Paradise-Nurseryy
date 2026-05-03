@@ -16,35 +16,12 @@ function CartItem({ onContinueShopping, onHomeClick }) {
   const cartCount = useSelector(selectCartCount);
   const [showModal, setShowModal] = useState(false);
 
-  const calculateTotalCost = (item) => {
-    return (item.price * item.quantity).toFixed(2);
-  };
+  const calculateTotalCost = (item) =>
+    (item.price * item.quantity).toFixed(2);
 
-  const calculateTotalAmount = () => {
-    return items
-      .reduce((acc, item) => acc + item.price * item.quantity, 0)
-      .toFixed(2);
-  };
-
-  const handleIncrement = (item) => {
-    dispatch(increaseQuantity(item.id));
-  };
-
-  const handleDecrement = (item) => {
-    dispatch(decreaseQuantity(item.id));
-  };
-
-  const handleRemove = (item) => {
-    dispatch(removeItem(item.id));
-  };
-
-  const handleCheckoutShopping = () => {
-    setShowModal(true);
-  };
-
-  const handleContinueShopping = () => {
-    onContinueShopping();
-  };
+  const handleIncrement = (item) => dispatch(increaseQuantity(item.id));
+  const handleDecrement = (item) => dispatch(decreaseQuantity(item.id));
+  const handleRemove    = (item) => dispatch(removeItem(item.id));
 
   return (
     <>
@@ -71,9 +48,8 @@ function CartItem({ onContinueShopping, onHomeClick }) {
       <div className="cart-page">
         <h1>🛒 Your Shopping Cart</h1>
 
-        {/* TOTAL CART AMOUNT AT TOP */}
         <div className="cart-total-amount" style={{ marginBottom: '24px' }}>
-          Total Cart Amount: ${calculateTotalAmount()}
+          Total Cart Amount: ${total.toFixed(2)}
         </div>
 
         {items.length === 0 ? (
@@ -81,7 +57,7 @@ function CartItem({ onContinueShopping, onHomeClick }) {
             <p>Your cart is empty.</p>
             <button
               className="btn-continue-shopping"
-              onClick={handleContinueShopping}
+              onClick={onContinueShopping}
               style={{ marginTop: '24px' }}
             >
               Browse Plants
@@ -92,29 +68,23 @@ function CartItem({ onContinueShopping, onHomeClick }) {
             {items.map((item) => (
               <div className="cart-item" key={item.id}>
 
-                {/* THUMBNAIL */}
                 <img src={item.image} alt={item.name} />
 
                 <div className="cart-item-info">
-                  {/* NAME */}
                   <div className="cart-item-name">{item.name}</div>
-
-                  {/* UNIT PRICE */}
                   <div className="cart-item-unit-price">
                     Unit Price: ${item.price.toFixed(2)}
                   </div>
-
-                  {/* TOTAL COST PER ITEM */}
                   <div className="cart-item-total">
                     Total Cost: ${calculateTotalCost(item)}
                   </div>
                 </div>
 
-                {/* CONTROLS */}
                 <div className="cart-item-controls">
                   <button
                     className="qty-btn"
                     onClick={() => handleDecrement(item)}
+                    aria-label={`Decrease quantity of ${item.name}`}
                   >
                     −
                   </button>
@@ -122,12 +92,14 @@ function CartItem({ onContinueShopping, onHomeClick }) {
                   <button
                     className="qty-btn"
                     onClick={() => handleIncrement(item)}
+                    aria-label={`Increase quantity of ${item.name}`}
                   >
                     +
                   </button>
                   <button
                     className="btn-delete"
                     onClick={() => handleRemove(item)}
+                    aria-label={`Remove ${item.name} from cart`}
                   >
                     Delete
                   </button>
@@ -141,18 +113,18 @@ function CartItem({ onContinueShopping, onHomeClick }) {
               <h3>Order Summary</h3>
               <div>Total Items: {cartCount}</div>
               <div className="cart-total-amount">
-                Total Amount: ${calculateTotalAmount()}
+                Total Amount: ${total.toFixed(2)}
               </div>
               <div className="cart-actions">
                 <button
                   className="btn-checkout"
-                  onClick={handleCheckoutShopping}
+                  onClick={() => setShowModal(true)}
                 >
                   Checkout
                 </button>
                 <button
                   className="btn-continue-shopping"
-                  onClick={handleContinueShopping}
+                  onClick={onContinueShopping}
                 >
                   Continue Shopping
                 </button>
