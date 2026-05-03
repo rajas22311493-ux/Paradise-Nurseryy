@@ -25,16 +25,19 @@ const cartSlice = createSlice({
 
     increaseQuantity: (state, action) => {
       const item = state.items.find((item) => item.id === action.payload);
-      if (item) item.quantity += 1;
+      if (item) {
+        item.quantity += 1;
+      }
     },
 
+    // Removes item automatically when quantity reaches zero
     decreaseQuantity: (state, action) => {
-      const item = state.items.find((item) => item.id === action.payload);
-      if (item) {
-        if (item.quantity === 1) {
-          state.items = state.items.filter((i) => i.id !== action.payload);
+      const index = state.items.findIndex((item) => item.id === action.payload);
+      if (index !== -1) {
+        if (state.items[index].quantity <= 1) {
+          state.items.splice(index, 1);
         } else {
-          item.quantity -= 1;
+          state.items[index].quantity -= 1;
         }
       }
     },
