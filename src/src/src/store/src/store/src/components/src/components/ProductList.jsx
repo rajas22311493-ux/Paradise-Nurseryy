@@ -1,6 +1,5 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { addItem, selectCartCount, selectCartItems } from '../store/CartSlice';
 
 const categories = [
@@ -39,38 +38,43 @@ const categories = [
   },
 ];
 
-export function Navbar({ cartCount }) {
-  return (
-    <nav className="navbar">
-      <Link to="/" className="navbar-brand">🌿 Paradise Nursery</Link>
-      <ul className="navbar-links">
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/plants">Plants</Link></li>
-        <li>
-          <Link to="/cart" className="cart-icon-wrapper">
-            🛒
-            {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
-          </Link>
-        </li>
-      </ul>
-    </nav>
-  );
-}
+function ProductList({ onCartClick, onHomeClick }) {
+  const dispatch  = useDispatch();
+  const cartItems = useSelector(selectCartItems);
+  const cartCount = useSelector(selectCartCount);
 
-function ProductList() {
-  const dispatch   = useDispatch();
-  const cartItems  = useSelector(selectCartItems);
-  const cartCount  = useSelector(selectCartCount);
+  const isInCart = (id) => cartItems.some((item) => item.id === id);
 
-  const isInCart = (id) => cartItems.some(item => item.id === id);
+  const handleAddToCart = (plant) => {
+    dispatch(addItem(plant));
+  };
 
   return (
-    <>
-      <Navbar cartCount={cartCount} />
+    <div>
+      {/* NAVBAR */}
+      <nav className="navbar">
+        <div className="navbar-brand" onClick={onHomeClick}>
+          🌿 Paradise Nursery
+        </div>
+        <ul className="navbar-links">
+          <li onClick={onHomeClick}>Home</li>
+          <li>Plants</li>
+          <li>
+            <div className="cart-icon-wrapper" onClick={onCartClick}>
+              🛒
+              {cartCount > 0 && (
+                <span className="cart-count">{cartCount}</span>
+              )}
+            </div>
+          </li>
+        </ul>
+      </nav>
+
+      {/* PRODUCT LISTING */}
       <div className="product-list-page">
         <h1>Our Houseplant Collection</h1>
         <p style={{ color: '#555', marginBottom: '8px' }}>
-          Find your perfect green companion — grouped by type for easy browsing.
+          Find your perfect green companion — grouped by type.
         </p>
 
         {categories.map((category) => (
@@ -83,11 +87,13 @@ function ProductList() {
                   <div className="plant-card-body">
                     <div>
                       <div className="plant-name">{plant.name}</div>
-                      <div className="plant-price">${plant.price.toFixed(2)}</div>
+                      <div className="plant-price">
+                        ${plant.price.toFixed(2)}
+                      </div>
                     </div>
                     <button
                       className="btn-add-to-cart"
-                      onClick={() => dispatch(addItem(plant))}
+                      onClick={() => handleAddToCart(plant)}
                       disabled={isInCart(plant.id)}
                     >
                       {isInCart(plant.id) ? '✓ Added' : 'Add to Cart'}
@@ -99,7 +105,7 @@ function ProductList() {
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 }
 
