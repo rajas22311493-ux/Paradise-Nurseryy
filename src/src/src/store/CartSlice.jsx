@@ -7,7 +7,9 @@ const cartSlice = createSlice({
   },
   reducers: {
     addItem: (state, action) => {
-      const existing = state.items.find(item => item.id === action.payload.id);
+      const existing = state.items.find(
+        (item) => item.id === action.payload.id
+      );
       if (existing) {
         existing.quantity += 1;
       } else {
@@ -15,17 +17,25 @@ const cartSlice = createSlice({
       }
     },
     removeItem: (state, action) => {
-      state.items = state.items.filter(item => item.id !== action.payload);
+      state.items = state.items.filter(
+        (item) => item.id !== action.payload
+      );
     },
     increaseQuantity: (state, action) => {
-      const item = state.items.find(item => item.id === action.payload);
+      const item = state.items.find(
+        (item) => item.id === action.payload
+      );
       if (item) item.quantity += 1;
     },
     decreaseQuantity: (state, action) => {
-      const item = state.items.find(item => item.id === action.payload);
+      const item = state.items.find(
+        (item) => item.id === action.payload
+      );
       if (item) {
         if (item.quantity === 1) {
-          state.items = state.items.filter(i => i.id !== action.payload);
+          state.items = state.items.filter(
+            (i) => i.id !== action.payload
+          );
         } else {
           item.quantity -= 1;
         }
@@ -45,10 +55,14 @@ export const {
   clearCart,
 } = cartSlice.actions;
 
-export const selectCartItems  = (state) => state.cart.items;
-export const selectCartTotal  = (state) =>
-  state.cart.items.reduce((total, item) => total + item.price * item.quantity, 0);
-export const selectCartCount  = (state) =>
-  state.cart.items.reduce((count, item) => count + item.quantity, 0);
+export const selectCartItems = (state) => state.cart.items;
+export const selectCartTotal = (state) =>
+  state.cart.items.reduce(
+    (total, item) => total + item.price * item.quantity, 0
+  );
+export const selectCartCount = (state) =>
+  state.cart.items.reduce(
+    (count, item) => count + item.quantity, 0
+  );
 
 export default cartSlice.reducer;
