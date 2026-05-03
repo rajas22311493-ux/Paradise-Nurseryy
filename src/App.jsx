@@ -1,42 +1,52 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import React, { useState } from 'react';
 import { Provider } from 'react-redux';
 import store from './store/store';
 import './App.css';
 
-import AboutUs from './components/AboutUs';
 import ProductList from './components/ProductList';
 import CartItem from './components/CartItem';
 
-function LandingPage() {
+function LandingPage({ onGetStarted }) {
   return (
-    <div className="landing-page">
+    <div className="background-image">
       <div className="landing-overlay" />
       <div className="landing-content">
         <h1>Paradise Nursery</h1>
         <p>
-          Bring life, color, and calm into your home with our hand-picked collection
-          of beautiful houseplants.
+          Bring life, color, and calm into your home with our
+          hand-picked collection of beautiful houseplants.
         </p>
-        <Link to="/plants" className="btn-get-started">
+        <button
+          className="btn-get-started"
+          onClick={onGetStarted}
+        >
           Get Started 🌱
-        </Link>
+        </button>
       </div>
     </div>
   );
 }
 
 function App() {
+  const [page, setPage] = useState('landing');
+
   return (
     <Provider store={store}>
-      <Router>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/about" element={<AboutUs />} />
-          <Route path="/plants" element={<ProductList />} />
-          <Route path="/cart" element={<CartItem />} />
-        </Routes>
-      </Router>
+      {page === 'landing' && (
+        <LandingPage onGetStarted={() => setPage('products')} />
+      )}
+      {page === 'products' && (
+        <ProductList
+          onCartClick={() => setPage('cart')}
+          onHomeClick={() => setPage('landing')}
+        />
+      )}
+      {page === 'cart' && (
+        <CartItem
+          onContinueShopping={() => setPage('products')}
+          onHomeClick={() => setPage('landing')}
+        />
+      )}
     </Provider>
   );
 }
