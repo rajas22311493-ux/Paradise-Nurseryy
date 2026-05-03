@@ -16,15 +16,23 @@ function CartItem({ onContinueShopping, onHomeClick }) {
   const cartCount = useSelector(selectCartCount);
   const [showModal, setShowModal] = useState(false);
 
+  // Dynamically recalculates on every render when quantity changes
   const calculateTotalAmount = () =>
-    items.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
+    items
+      .reduce((acc, item) => acc + item.price * item.quantity, 0)
+      .toFixed(2);
 
+  // Dynamically recalculates per-item cost on every render
   const calculateTotalCost = (item) =>
     (item.price * item.quantity).toFixed(2);
 
   const handleIncrement = (item) => dispatch(increaseQuantity(item.id));
+
+  // Decrements quantity; removes item if quantity reaches zero (handled in slice)
   const handleDecrement = (item) => dispatch(decreaseQuantity(item.id));
-  const handleRemove    = (item) => dispatch(removeItem(item.id));
+
+  // Explicitly removes item from cart regardless of quantity
+  const handleRemove = (item) => dispatch(removeItem(item.id));
 
   return (
     <>
@@ -51,6 +59,7 @@ function CartItem({ onContinueShopping, onHomeClick }) {
       <div className="cart-page">
         <h1>🛒 Your Shopping Cart</h1>
 
+        {/* Total cart amount — updates dynamically */}
         <div className="cart-total-amount" style={{ marginBottom: '24px' }}>
           Total Cart Amount: ${calculateTotalAmount()}
         </div>
@@ -78,6 +87,7 @@ function CartItem({ onContinueShopping, onHomeClick }) {
                   <div className="cart-item-unit-price">
                     Unit Price: ${item.price.toFixed(2)}
                   </div>
+                  {/* Updates dynamically on quantity change */}
                   <div className="cart-item-total">
                     Total Cost: ${calculateTotalCost(item)}
                   </div>
