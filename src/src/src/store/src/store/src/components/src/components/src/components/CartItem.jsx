@@ -16,6 +16,9 @@ function CartItem({ onContinueShopping, onHomeClick }) {
   const cartCount = useSelector(selectCartCount);
   const [showModal, setShowModal] = useState(false);
 
+  const calculateTotalAmount = () =>
+    items.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
+
   const calculateTotalCost = (item) =>
     (item.price * item.quantity).toFixed(2);
 
@@ -49,7 +52,7 @@ function CartItem({ onContinueShopping, onHomeClick }) {
         <h1>🛒 Your Shopping Cart</h1>
 
         <div className="cart-total-amount" style={{ marginBottom: '24px' }}>
-          Total Cart Amount: ${total.toFixed(2)}
+          Total Cart Amount: ${calculateTotalAmount()}
         </div>
 
         {items.length === 0 ? (
@@ -113,7 +116,7 @@ function CartItem({ onContinueShopping, onHomeClick }) {
               <h3>Order Summary</h3>
               <div>Total Items: {cartCount}</div>
               <div className="cart-total-amount">
-                Total Amount: ${total.toFixed(2)}
+                Total Amount: ${calculateTotalAmount()}
               </div>
               <div className="cart-actions">
                 <button
