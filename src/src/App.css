@@ -39,6 +39,7 @@ body {
   color: var(--green-pale);
   letter-spacing: 1px;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .navbar-links {
@@ -48,14 +49,15 @@ body {
   list-style: none;
 }
 
-.navbar-links a {
+.navbar-links li {
   color: var(--cream);
   text-decoration: none;
   font-size: 1rem;
+  cursor: pointer;
   transition: color 0.2s;
 }
 
-.navbar-links a:hover {
+.navbar-links li:hover {
   color: var(--green-light);
 }
 
@@ -66,7 +68,6 @@ body {
   align-items: center;
   color: var(--cream);
   font-size: 1.5rem;
-  text-decoration: none;
 }
 
 .cart-count {
@@ -86,12 +87,12 @@ body {
 }
 
 /* LANDING PAGE */
-.landing-page {
-  min-height: 100vh;
+.background-image {
   background-image: url('https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=1600&q=80');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -142,30 +143,29 @@ body {
   border: none;
   cursor: pointer;
   letter-spacing: 1px;
-  transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+  transition: background 0.3s, transform 0.2s;
   box-shadow: 0 4px 20px rgba(82,183,136,0.4);
 }
 
 .btn-get-started:hover {
   background-color: var(--green-pale);
   transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(82,183,136,0.5);
 }
 
 /* ABOUT US */
-.about-page {
+.about-us-container {
   max-width: 900px;
   margin: 60px auto;
   padding: 0 24px;
 }
 
-.about-page h2 {
+.about-us-container h2 {
   font-size: 2.5rem;
   color: var(--green-mid);
   margin-bottom: 24px;
 }
 
-.about-page p {
+.about-us-container p {
   font-size: 1.1rem;
   line-height: 1.9;
   color: #333;
@@ -434,9 +434,7 @@ body {
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
-  text-decoration: none;
   transition: background 0.2s, color 0.2s;
-  display: inline-block;
 }
 
 .btn-continue-shopping:hover {
